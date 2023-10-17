@@ -22,7 +22,12 @@ def pegar_dados():
     # GERANDO UM DATAFRAME COM PANDAS
     df = pd.DataFrame(ws.get_all_records())
     df = renomear_colunas(df)
+    df = organizarColunas(df)
+    return df
 
+
+def organizarColunas(df):
+    df = df[['genero','habito_fumar','rotina_skin_care','sobre_rotina_skin_care','conhece_oral_care','produtos_relacionados_oral_care','pratica_raspagem_lingua','frequencia_escova_dentes_diaria','uso_fio_dental','escovar_dentes_com_forca','substitui_escova_dentes','usa_enxaguante_bucal','usa_protetor_solar_labial','uso_frequente_hidratante_labial','idade','cidade']]
     return df
 
 
