@@ -21,6 +21,12 @@ def pegar_dados():
 
     # GERANDO UM DATAFRAME COM PANDAS
     df = pd.DataFrame(ws.get_all_records())
+    df = renomear_colunas(df)
+
+    return df
+
+
+def renomear_colunas(df):
 
     df = df.rename(columns={'Carimbo de data/hora': 'data/hora'})
     df = df.rename(columns={'Gênero:': 'genero'})
@@ -38,6 +44,10 @@ def pegar_dados():
     df = df.rename(columns={'Você utiliza enxaguante bucal?': 'usa_enxaguante_bucal'})
     df = df.rename(columns={'Você utiliza frequentemente protetor solar labial?': 'usa_protetor_solar_labial'})
     df = df.rename(columns={'Você faz uso frequente de hidratante labial?': 'uso_frequente_hidratante_labial'})
+    df = df.rename(columns={'Nome': 'nome'})
+    df = df.rename(columns={'Idade': 'idade'})
+    df = df.rename(columns={'Email': 'email'})
+    df = df.rename(columns={'Cidade': 'cidade'})
 
     return df
 
