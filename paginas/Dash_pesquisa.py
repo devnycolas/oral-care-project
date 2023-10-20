@@ -5,10 +5,11 @@ import pandas as pd
 def dash_pesquisa(df: pd.DataFrame):
     st.header("Dash pesquisa: Tendências e Desafios no Cuidado de Saúde Bucal")
     st.write("Graficos Voltados para o oral care")
-    plot_renda_conhece_oc(df)
+    
+    plot_renda_conhece_oc(df, st)
 
 
-def plot_renda_conhece_oc(df):
+def plot_renda_conhece_oc(df: pd.DataFrame, contx: st):
     # rendaxconhece oral care
     # Crie uma coluna auxiliar com 1 para "Sim" e 0 para "Não"
     df['conhece_oral_care_bin'] = (df['conhece_oral_care'] == 'Sim').astype(int)
@@ -32,6 +33,7 @@ def plot_renda_conhece_oc(df):
     fig_renda_conhece_oc.update_traces(text=df_grouped['Total Sim'], textangle=0, textposition='inside', selector=dict(name='Total Sim'))
     fig_renda_conhece_oc.update_traces(text=df_grouped['Total Não'], textangle=0 ,textposition='inside', selector=dict(name='Total Não'))
     fig_renda_conhece_oc.update_xaxes(categoryarray=ordem)
-    st.plotly_chart(fig_renda_conhece_oc)
+    contx.plotly_chart(fig_renda_conhece_oc, use_container_width=True)
     #Qual situação socio economica mais conhece sobre o oral care?
+
 
