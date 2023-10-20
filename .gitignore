@@ -7,7 +7,3 @@ __pycache__
 .idea
 
 venv/**
-
-keyconnect.json
-
-.env
