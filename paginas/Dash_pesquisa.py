@@ -23,6 +23,7 @@ def dash_pesquisa(df: pd.DataFrame):
     plot_renda_conhece_oc(df, rend1)
     plot_renda_conhece_produtos_oc(df, rend2)
     plot_agravantes(df, cola[0])
+    plot_conhece_oral_care_cidade(df, st)
 
 
 
@@ -217,6 +218,28 @@ def plot_conhece_oral_care_genero(df: pd.DataFrame, contx: st):
     colors = {'Sim': '#d3ffce','Não': '#DC143C'}
     # Gráfico de Barras Empilhadas para Conhece Oral Care por Gênero (em ordem crescente)
     fig = px.bar(df_group, x='genero', y='Contagem', title="Conhece Oral Care por Gênero",
+                            color='Conhece Oral Care', color_discrete_map=colors, barmode='group')
+    # Personalize as cores
+    #fig.update_traces(marker_line_color='black', marker_line_width=1)
+    fig.update_xaxes(title_text='Gênero')
+    fig.update_yaxes(title_text='Quantidade')
+    fig.update_traces(text=df_group['Contagem'], textangle=0, textposition='outside')
+    # Exiba o gráfico
+    contx.plotly_chart(fig, use_container_width=True)
+
+
+def plot_conhece_oral_care_cidade(df: pd.DataFrame, contx: st):
+    # Calcule as contagens por gênero e se conhecem o Oral Care
+    df_group = df.groupby(['cidade', 'conhece_oral_care']).size().unstack().fillna(0)
+    # Reorganize os dados para criar o gráfico
+    df_group = df_group.reset_index()
+    df_group = pd.melt(df_group, id_vars='cidade', var_name='Conhece Oral Care', value_name='Contagem')
+    # Organize os dados em ordem crescente de contagem
+    df_group = df_group.sort_values(by='Contagem', ascending=False)
+    # Defina uma paleta de cores personalizada
+    colors = {'Sim': '#d3ffce','Não': '#DC143C'}
+    # Gráfico de Barras Empilhadas para Conhece Oral Care por Gênero (em ordem crescente)
+    fig = px.bar(df_group, x='cidade', y='Contagem', title="Conhece Oral Care por Cidade",
                             color='Conhece Oral Care', color_discrete_map=colors, barmode='group')
     # Personalize as cores
     #fig.update_traces(marker_line_color='black', marker_line_width=1)

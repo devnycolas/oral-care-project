@@ -1,11 +1,13 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from .Dash_pesquisa import df_com_coords
+from .Dash_pesquisa import df_com_coords, plot_conhece_oral_care_cidade, plot_conhece_oral_care_genero
 
 
 def apresentacao(df):
+    plot_conhece_oral_care_cidade(df, st)
     plot_conhece_oral_care_idade(df, st)
+    plot_conhece_oral_care_genero(df, st)
     col1, col2 = st.columns([2,2])
     plot_mapa_sim(df, col1)
     plot_mapa_nao(df, col2)
