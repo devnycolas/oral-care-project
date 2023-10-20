@@ -4,4 +4,4 @@ import pandas as pd
 def sobre(df):
     st.header("Sobre")
     st.write("...")
-    st.table(df)
+    

@@ -12,17 +12,17 @@ ordem = ["Menos de R$ 1.000,00", "R$ 1.000,00 a R$ 2.000,00", "R$ 2.001,00 a R$ 
 def dash_pesquisa(df: pd.DataFrame):
     st.header("Dash pesquisa: Tendências e Desafios no Cuidado de Saúde Bucal")
     st.write("Graficos Voltados para o oral care")
-    cols = st.columns([2])
+    cola = st.columns([2])
+    colg = st.columns(1)
     rend1, rend2 = st.columns(2)
     col_sk1, col_sk2 = st.columns(2)
-    col4 = st.columns(1)
     #plot_mapa(df, st)
     plot_renda_conhece_oc(df, rend1)
-    plot_agravantes(df, cols[0])
+    plot_agravantes(df, cola[0])
     plot_renda_conhece_produtos_oc(df, rend2)
     plot_skin_oc(df, col_sk1)
     plot_nskin_oc(df, col_sk2)
-    conhece_oral_care_genero(df, col4)
+    conhece_oral_care_genero(df, colg[0])
 
 
 
@@ -181,19 +181,6 @@ def get_json_cache():
         return {}
 
 
-def get_lat_lon(city):
-    if city == 'Outro':
-        return None, None
-    if city in map_coords.keys():
-        return map_coords[city][0], map_coords[city][1]
-    
-    location = geolocator.geocode(city)
-    
-    if location:
-        map_coords[city] = [location.latitude, location.longitude]
-        return location.latitude, location.longitude
-    else:
-        return None, None
 
 def salvar_loc_cache():
     with open(caminho_locales, 'w') as arquivo_json:
@@ -202,7 +189,7 @@ def salvar_loc_cache():
 
 def df_com_coords(df: pd.DataFrame):
     map_coords = get_json_cache()
-    df['latitude'], df['longitude'] = zip(*df['cidade'].apply(get_lat_lon))
+    
     salvar_loc_cache()
     return df
 
@@ -241,11 +228,11 @@ def conhece_oral_care_genero(df: pd.DataFrame, contx: st):
     # Defina uma paleta de cores personalizada
     colors = {'Sim': '#fa8072', 'Não': '#3c5656'}
     # Gráfico de Barras Empilhadas para Conhece Oral Care por Gênero (em ordem crescente)
-    fig_stacked_bar = px.bar(smoking_gender_counts, x='genero', y='Contagem', title="Conhece Oral Care por Gênero",
+    fig = px.bar(smoking_gender_counts, x='genero', y='Contagem', title="Conhece Oral Care por Gênero",
                             color='Conhece Oral Care', color_discrete_map=colors, barmode='group')
     # Personalize as cores
-    fig_stacked_bar.update_traces(marker_line_color='black', marker_line_width=1)
-    fig_stacked_bar.update_xaxes(title_text='Gênero')
-    fig_stacked_bar.update_yaxes(title_text='Quantidade')
+    fig.update_traces(marker_line_color='black', marker_line_width=1)
+    fig.update_xaxes(title_text='Gênero')
+    fig.update_yaxes(title_text='Quantidade')
     # Exiba o gráfico
-    st.plotly_chart(fig_stacked_bar, use_container_width=True)
+    contx.plotly_chart(fig, use_container_width=True)
