@@ -2,10 +2,9 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-#from geopy.geocoders import Nominatim
 import json
-#geolocator = Nominatim(user_agent="geoapiExercises")
-caminho_locales = '.\cache\locales.json'
+
+caminho_locales = 'paginas\cache\locales.json'
 map_coords = {}
 with open(caminho_locales, 'r') as arquivo_json:
     map_coords = json.load(arquivo_json)
