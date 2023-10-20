@@ -173,13 +173,13 @@ def plot_nskin_oc(df: pd.DataFrame, contx: st):
     
     contx.plotly_chart(fig, use_container_width=True)
 
+
 def get_json_cache():
     try:
         locales = json.loads(caminho_locales)
         return locales
     except:
         return {}
-
 
 
 def salvar_loc_cache():
@@ -226,13 +226,14 @@ def conhece_oral_care_genero(df: pd.DataFrame, contx: st):
     # Organize os dados em ordem crescente de contagem
     smoking_gender_counts = smoking_gender_counts.sort_values(by='Contagem', ascending=False)
     # Defina uma paleta de cores personalizada
-    colors = {'Sim': '#fa8072', 'Não': '#3c5656'}
+    colors = {'Sim': '#d3ffce','Não': '#DC143C'}
     # Gráfico de Barras Empilhadas para Conhece Oral Care por Gênero (em ordem crescente)
     fig = px.bar(smoking_gender_counts, x='genero', y='Contagem', title="Conhece Oral Care por Gênero",
                             color='Conhece Oral Care', color_discrete_map=colors, barmode='group')
     # Personalize as cores
-    fig.update_traces(marker_line_color='black', marker_line_width=1)
+    #fig.update_traces(marker_line_color='black', marker_line_width=1)
     fig.update_xaxes(title_text='Gênero')
     fig.update_yaxes(title_text='Quantidade')
+    fig.update_traces(text=smoking_gender_counts['Contagem'], textangle=0, textposition='outside')
     # Exiba o gráfico
     contx.plotly_chart(fig, use_container_width=True)
