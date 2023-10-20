@@ -8,8 +8,8 @@ def participantes(df):
     col1, col2 = st.columns(2)
     col3 = st.columns(1)
     plot_pizza_genero(df, col1)
-    habito_fumar(df, col2)
-    skin_care_genero(df, col3)
+    plot_habito_fumar(df, col2)
+    plot_skin_care_genero(df, col3)
 
 
 def plot_pizza_genero(df: pd.DataFrame, contx: st):
@@ -19,14 +19,14 @@ def plot_pizza_genero(df: pd.DataFrame, contx: st):
                     color_discrete_map={gen: cold_colors[i] for i, gen in enumerate(df['genero'].unique())})
     contx.plotly_chart(fig_pie, use_container_width=True)
 
-def habito_fumar(df: pd.DataFrame, contx: st):
+def plot_habito_fumar(df: pd.DataFrame, contx: st):
     cold_colors = ['#782f40', '#00274c', '#3c5656']
     # Atribua a paleta de cores frias ao gráfico e use a coluna 'genero' para definir as cores
-    fig_pie = px.pie(df, names='habito_fumar', color='habito_fumar', title="Porcentagem de Pessoas com Hábito de Fumar",
-                    color_discrete_map={gen: cold_colors[i] for i, gen in enumerate(df['habito_fumar'].unique())})
+    fig_pie = px.pie(df, names='plot_habito_fumar', color='plot_habito_fumar', title="Porcentagem de Pessoas com Hábito de Fumar",
+                    color_discrete_map={gen: cold_colors[i] for i, gen in enumerate(df['plot_habito_fumar'].unique())})
     contx.plotly_chart(fig_pie, use_container_width=True)
 
-def skin_care_genero(df: pd.DataFrame, contx: st):
+def plot_skin_care_genero(df: pd.DataFrame, contx: st):
     routine_skin_care_counts = df.groupby(['genero', 'rotina_skin_care']).size().unstack().fillna(0)
     # Reorganize os dados para criar o gráfico
     routine_skin_care_counts = routine_skin_care_counts.reset_index()
@@ -42,4 +42,4 @@ def skin_care_genero(df: pd.DataFrame, contx: st):
     fig_bar.update_xaxes(title='Gênero')
     fig_bar.update_yaxes(title='Quantidade')
     # Exiba o gráfico
-    st.plotly_chart(fig_bar, use_container_width=True)
+    contx.plotly_chart(fig_bar, use_container_width=True)
