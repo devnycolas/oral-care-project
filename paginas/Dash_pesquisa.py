@@ -12,17 +12,17 @@ ordem = ["Menos de R$ 1.000,00", "R$ 1.000,00 a R$ 2.000,00", "R$ 2.001,00 a R$ 
 def dash_pesquisa(df: pd.DataFrame):
     st.header("Dash pesquisa: Tendências e Desafios no Cuidado de Saúde Bucal")
     st.write("Graficos Voltados para o oral care")
-    cola = st.columns([2])
     colg = st.columns(1)
-    rend1, rend2 = st.columns(2)
     col_sk1, col_sk2 = st.columns(2)
+    rend1, rend2 = st.columns(2)
+    cola = st.columns([2])
     #plot_mapa(df, st)
-    plot_renda_conhece_oc(df, rend1)
-    plot_agravantes(df, cola[0])
-    plot_renda_conhece_produtos_oc(df, rend2)
+    conhece_oral_care_genero(df, colg[0])
     plot_skin_oc(df, col_sk1)
     plot_nskin_oc(df, col_sk2)
-    conhece_oral_care_genero(df, colg[0])
+    plot_renda_conhece_oc(df, rend1)
+    plot_renda_conhece_produtos_oc(df, rend2)
+    plot_agravantes(df, cola[0])
 
 
 
