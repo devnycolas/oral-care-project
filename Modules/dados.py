@@ -1,17 +1,22 @@
+import json
 import gspread
 import pandas as pd
 import re
 import os
 import dotenv
+from oauth2client.service_account import ServiceAccountCredentials
+
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 
 def pegar_dados():
     # CÓDIGO DA PLANILHA, LOCALIZADO NA URL DA MESMA
     CODE = str(os.getenv('code'))
-
+    json_string = str(os.getenv('keyconect'))
+    CREDENCIAIS = dict(json.loads(json_string))
     # CRIANDO GOOGLE CLIENT
-    gc = gspread.service_account(filename="keyconnect.json")
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(CREDENCIAIS)
+    gc = gspread.authorize(credentials)
 
     # Abrindo a planilha pelo código
     sh = gc.open_by_key(CODE)
