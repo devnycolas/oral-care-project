@@ -5,7 +5,10 @@ import pandas as pd
 def dash_pesquisa(df: pd.DataFrame):
     st.header("Dash pesquisa: Tendências e Desafios no Cuidado de Saúde Bucal")
     st.write("Graficos Voltados para o oral care")
+    plot_renda_conhece_oc(df)
 
+
+def plot_renda_conhece_oc(df):
     # rendaxconhece oral care
     # Crie uma coluna auxiliar com 1 para "Sim" e 0 para "Não"
     df['conhece_oral_care_bin'] = (df['conhece_oral_care'] == 'Sim').astype(int)
