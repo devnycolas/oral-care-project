@@ -1,13 +1,18 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-ordem = ["Não quero responder", "Menos de R$ 1.000,00", "R$ 1.000,00 a R$ 2.000,00", "R$ 2.001,00 a R$ 3.000,00", "R$ 3.001,00 a R$ 4.000,00", "Mais de R$ 4.000,00"]
+ordem = ["Menos de R$ 1.000,00", "R$ 1.000,00 a R$ 2.000,00", "R$ 2.001,00 a R$ 3.000,00", "R$ 3.001,00 a R$ 4.000,00", "Mais de R$ 4.000,00", "Não quero responder"]
 def dash_pesquisa(df: pd.DataFrame):
     st.header("Dash pesquisa: Tendências e Desafios no Cuidado de Saúde Bucal")
     st.write("Graficos Voltados para o oral care")
-    
-    plot_renda_conhece_oc(df, st)
-    plot_agravantes(df, st)
+    cols = st.columns([2])
+    rend1, rend2 = st.columns(2)
+    col_sk1, col_sk2 = st.columns(2)
+    plot_renda_conhece_oc(df, rend1)
+    plot_agravantes(df, cols[0])
+    plot_renda_conhece_produtos_oc(df, rend2)
+    plot_skin_oc(df, col_sk1)
+    plot_nskin_oc(df, col_sk2)
 
 
 def plot_renda_conhece_oc(df: pd.DataFrame, contx: st):
@@ -23,24 +28,24 @@ def plot_renda_conhece_oc(df: pd.DataFrame, contx: st):
     df_grouped.reset_index(inplace=True)
 
     
-    fig_renda_conhece_oc = px.bar(df_grouped, x='renda_percapita', y=['Total Sim', 'Total Não'], barmode='group',
+    fig = px.bar(df_grouped, x='renda_percapita', y=['Total Sim', 'Total Não'], barmode='group',
              labels={'Total Sim': 'Sim', 'Total Não': 'Não'},
              title='Conhece o oral care baseado na renda:', color_discrete_map={'Sim': 'green', 'Não': 'red'})
-    fig_renda_conhece_oc.update_xaxes(title_text='')  # Renomeie o título do eixo x
-    fig_renda_conhece_oc.update_yaxes(title_text='Conhece')  # Renomeie o título do eixo y
-    fig_renda_conhece_oc = fig_renda_conhece_oc.update_xaxes()
-    fig_renda_conhece_oc.data[0].marker.color = '#d3ffce'  # Cor para "Sim"
-    fig_renda_conhece_oc.data[1].marker.color = '#DC143C'    # Cor para "Não"
+    fig.update_xaxes(title_text='')  # Renomeie o título do eixo x
+    fig.update_yaxes(title_text='Conhece')  # Renomeie o título do eixo y
+    fig = fig.update_xaxes()
+    fig.data[0].marker.color = '#d3ffce'  # Cor para "Sim"
+    fig.data[1].marker.color = '#DC143C'    # Cor para "Não"
     # Adicione o valor total como texto nas barras
-    fig_renda_conhece_oc.update_traces(text=df_grouped['Total Sim'], textangle=0, textposition='inside', selector=dict(name='Total Sim'))
-    fig_renda_conhece_oc.update_traces(text=df_grouped['Total Não'], textangle=0 ,textposition='inside', selector=dict(name='Total Não'))
-    fig_renda_conhece_oc.update_xaxes(categoryarray=ordem)
-    contx.plotly_chart(fig_renda_conhece_oc, use_container_width=True)
+    fig.update_traces(text=df_grouped['Total Sim'], textangle=0, textposition='inside', selector=dict(name='Total Sim'))
+    fig.update_traces(text=df_grouped['Total Não'], textangle=0 ,textposition='inside', selector=dict(name='Total Não'))
+    fig.update_xaxes(categoryarray=ordem)
+    contx.plotly_chart(fig, use_container_width=True)
     #Qual situação socio economica mais conhece sobre o oral care?
 
 
 def atribuir_rotulo(pontuacao):
-    if pontuacao < -3:
+    if pontuacao <= -3:
         return 'excelente'
     elif -2 <= pontuacao <= -1:
         return 'muito bom'
@@ -71,7 +76,7 @@ def df_com_agravante(df: pd.DataFrame):
 
     # Soma dos resultados
     df['agravantes'] = df[col_positivos].sum(axis=1) + df[col_negativos].sum(axis=1)
-    st.plotly_chart(df)
+    df['agravantes'] = df['agravantes'].apply(atribuir_rotulo)
     return df
 
 
@@ -79,14 +84,80 @@ def plot_agravantes(df: pd.DataFrame, contx: st):
     df_agravante = df_com_agravante(df)
     # Crie um gráfico de barras empilhadas usando Plotly Express
     df_grouped = df_agravante.groupby(['renda_percapita', 'agravantes']).size().unstack(fill_value=0)
-    fig_agravantes = px.bar(df_grouped, x=df_grouped.index, y=df_grouped.columns, title='Correlação entre Renda Per Capita e agravantes',
-                labels={'index': 'Renda Per Capita', 'value': 'Contagem', 'classificacao': 'agravantes'},
+    ordem_desejada = ["excelente", "muito bom", "bom", "ruim", "muito ruim", "péssimo"]
+    df_grouped = df_grouped.reindex(columns=ordem_desejada)
+    fig = px.bar(df_grouped, x=df_grouped.index, y=df_grouped.columns, title='Relação entre renda e cuidados com a boca',
+                labels={'index': 'Renda Per Capita', 'value': 'Quantidade', 'classificacao': 'condição'},
                 category_orders={"classificacao": ["excelente", "muito bom", "bom", "ruim", "muito ruim", "péssimo"]},barmode='group')
 
     # Personalize as cores das barras
     colors = px.colors.qualitative.Set1[:6]# lista com 6 cores
-    for i in range(6):
-        fig_agravantes.data[i].marker.color = colors[i]
-    fig_agravantes.update_xaxes(categoryarray=ordem)
-    contx.plotly_chart(fig_agravantes)
+    for i in range(len(fig.data)):
+        fig.data[i].marker.color = colors[i]
+    fig.update_xaxes(categoryarray=ordem)
+    fig.update_xaxes(title_text='')
     
+
+    contx.plotly_chart(fig, use_container_width=True)
+    
+
+def plot_renda_conhece_produtos_oc(df: pd.DataFrame, contx: st):
+    
+    # rendaxconhece oral care
+    # Crie uma coluna auxiliar com 1 para "Sim" e 0 para "Não"
+    df['conhece_oral_care_bin'] = (df['produtos_relacionados_oral_care'] == 'Sim').astype(int)
+    # Use groupby e count para contar "Sim" e "Não" separadamente
+    df_grouped = df.groupby(['renda_percapita', 'produtos_relacionados_oral_care']).size().unstack(fill_value=0)
+    # Renomeie as colunas
+    df_grouped = df_grouped.rename(columns={'Sim': 'Total Sim', 'Não': 'Total Não'})
+    # Reset o índice, se desejar
+    df_grouped.reset_index(inplace=True)
+
+    
+    fig = px.bar(df_grouped, x='renda_percapita', y=['Total Sim', 'Total Não'], barmode='group',
+             labels={'Total Sim': 'Sim', 'Total Não': 'Não'},
+             title='Conhece produtos de oral care baseado na renda:', color_discrete_map={'Sim': 'green', 'Não': 'red'})
+    fig.update_xaxes(title_text='')  # Renomeie o título do eixo x
+    fig.update_yaxes(title_text='Conhece')  # Renomeie o título do eixo y
+    fig = fig.update_xaxes()
+    fig.data[0].marker.color = '#d3ffce'  
+    fig.data[1].marker.color = '#DC143C'   
+    fig.update_traces(text=df_grouped['Total Sim'], textangle=0, textposition='inside', selector=dict(name='Total Sim'))
+    fig.update_traces(text=df_grouped['Total Não'], textangle=0 ,textposition='inside', selector=dict(name='Total Não'))
+    fig.update_xaxes(categoryarray=ordem)
+    contx.plotly_chart(fig, use_container_width=True)
+    
+
+def plot_skin_oc(df: pd.DataFrame, contx: st):
+    # Filtrar as entradas onde 'rotina_skin_care' é "Sim"
+    df_filtrado = df[df['rotina_skin_care'] == 'Sim']
+
+    # Calcular a porcentagem de "Sim" e "Não" em 'conhece_oral_care' para as entradas com 'rotina_skin_care' como "Sim"
+    porcentagem_sim_nao = df_filtrado['conhece_oral_care'].value_counts(normalize=True) * 100
+
+    # Criar um gráfico de pizza
+    fig = px.pie(values=porcentagem_sim_nao, names=porcentagem_sim_nao.index,
+                title='Quem pratica o skin care conhece o oral care?',
+                labels={'names': 'conhece_oral_care', 'values': 'Porcentagem (%)'})
+    cores = ['#d3ffce', '#DC143C']
+    fig.update_traces(marker=dict(colors=cores))
+    
+    contx.plotly_chart(fig, use_container_width=True)
+
+
+def plot_nskin_oc(df: pd.DataFrame, contx: st):
+    # Filtrar as entradas onde 'rotina_skin_care' é "Não"
+    df_filtrado = df[df['rotina_skin_care'] == 'Não']
+
+    # Calcular a porcentagem de "Sim" e "Não" em 'conhece_oral_care' para as entradas com 'rotina_skin_care' como "Sim"
+    porcentagem_sim_nao = df_filtrado['conhece_oral_care'].value_counts(normalize=True) * 100
+
+    # Criar um gráfico de pizza
+    fig = px.pie(values=porcentagem_sim_nao, names=porcentagem_sim_nao.index,
+                title='Quem conhece o oral care mas não pratica o skin care?',
+                labels={'names': 'conhece_oral_care', 'values': 'Porcentagem (%)'})
+    cores = ['#d3ffce', '#DC143C']
+    cores.reverse()
+    fig.update_traces(marker=dict(colors=cores))
+    
+    contx.plotly_chart(fig, use_container_width=True)

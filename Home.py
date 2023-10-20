@@ -19,6 +19,8 @@ pages = {
 
 st.sidebar.title("Navegação")
 selected_page = st.sidebar.selectbox("Selecione uma página", list(pages.keys()))
-df = pegar_dados()
+code = str(st.secrets['code'])
+auth = dict(st.secrets['keyconect'])
+df = pegar_dados(code, auth)
 
 pages[selected_page](df)
