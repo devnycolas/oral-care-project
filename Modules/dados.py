@@ -9,17 +9,18 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 
-def pegar_dados():
-    # CÓDIGO DA PLANILHA, LOCALIZADO NA URL DA MESMA
+def pegar_dados(codigo, credenciais):
+    """# CÓDIGO DA PLANILHA, LOCALIZADO NA URL DA MESMA
     CODE = str(os.getenv('code'))
-    json_string = str(os.getenv('keyconect'))
+    json_string = credenciais
+    print(CREDENCIAIS)
     CREDENCIAIS = dict(json.loads(json_string))
-    # CRIANDO GOOGLE CLIENT
-    credentials = ServiceAccountCredentials.from_json_keyfile_dict(CREDENCIAIS)
+    # CRIANDO GOOGLE CLIENT"""
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(credenciais)
     gc = gspread.authorize(credentials)
 
     # Abrindo a planilha pelo código
-    sh = gc.open_by_key(CODE)
+    sh = gc.open_by_key(codigo)
 
     # Acessando a planilha pelo título "Respostas ao formulário 1" em específico
     ws = sh.worksheet("Respostas ao formulário 1")

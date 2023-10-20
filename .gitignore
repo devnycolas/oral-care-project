@@ -11,3 +11,5 @@ venv/**
 keyconnect.json
 
 .env
+
+.streamlit/secrets.toml
