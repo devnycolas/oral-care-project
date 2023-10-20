@@ -13,4 +13,5 @@ keyconnect.json
 .env
 
 .streamlit/secrets.toml
-cache/locales.json
+
+GeraCoords.py

@@ -5,6 +5,7 @@ import pandas as pd
 from paginas.Dash_pesquisa import *
 from paginas.Participantes import *
 from paginas.Sobre import *
+from paginas.Apresentacao import *
 
 from Modules.dados import pegar_dados
 
@@ -15,6 +16,7 @@ pages = {
     "Sobre": sobre,
     "Dash Pesquisa": dash_pesquisa,
     "Participantes": participantes,
+    "Apresentação": apresentacao,
 }
 
 st.sidebar.title("Navegação")

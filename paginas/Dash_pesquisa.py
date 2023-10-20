@@ -5,19 +5,23 @@ import pandas as pd
 #from geopy.geocoders import Nominatim
 import json
 #geolocator = Nominatim(user_agent="geoapiExercises")
-map_coords = {}
 caminho_locales = '.\cache\locales.json'
+map_coords = {}
+with open(caminho_locales, 'r') as arquivo_json:
+    map_coords = json.load(arquivo_json)
+
 
 ordem = ["Menos de R$ 1.000,00", "R$ 1.000,00 a R$ 2.000,00", "R$ 2.001,00 a R$ 3.000,00", "R$ 3.001,00 a R$ 4.000,00", "Mais de R$ 4.000,00", "Não quero responder"]
 def dash_pesquisa(df: pd.DataFrame):
     st.header("Dash pesquisa: Tendências e Desafios no Cuidado de Saúde Bucal")
     st.write("Graficos Voltados para o oral care")
+    mapa  = st.columns([2,1])
     colg = st.columns(1)
     col_sk1, col_sk2 = st.columns(2)
     rend1, rend2 = st.columns(2)
     cola = st.columns([2])
-    #plot_mapa(df, st)
-    conhece_oral_care_genero(df, colg[0])
+    plot_mapa(df, mapa)
+    plot_conhece_oral_care_genero(df, colg[0])
     plot_skin_oc(df, col_sk1)
     plot_nskin_oc(df, col_sk2)
     plot_renda_conhece_oc(df, rend1)
@@ -174,66 +178,54 @@ def plot_nskin_oc(df: pd.DataFrame, contx: st):
     contx.plotly_chart(fig, use_container_width=True)
 
 
-def get_json_cache():
-    try:
-        locales = json.loads(caminho_locales)
-        return locales
-    except:
-        return {}
-
-
-def salvar_loc_cache():
-    with open(caminho_locales, 'w') as arquivo_json:
-        json.dump(map_coords, arquivo_json)
+def get_lat_lon(city):
+    if city == 'Outro':
+        return None, None
+    if city in map_coords.keys():
+        return map_coords[city][0], map_coords[city][1]
+    else:
+        return None, None
 
 
 def df_com_coords(df: pd.DataFrame):
-    map_coords = get_json_cache()
-    
-    salvar_loc_cache()
+    df['latitude'], df['longitude'] = zip(*df['cidade'].apply(get_lat_lon))
     return df
 
 
 def plot_mapa(df: pd.DataFrame, contx: st):
-    df_coord = df_com_coords(df)
-    # Crie o objeto Densitymapbox
-    conhece_oral_care_mapping = {'Sim': 1, 'Não': 0}
-    df_coord['conhece_oral_care_numeric'] = df_coord['conhece_oral_care'].map(conhece_oral_care_mapping)
-    df_coord['conhece_oral_care_numeric'] = df_coord['conhece_oral_care_numeric'].astype(int)
-    densitymapbox = go.Densitymapbox(lat=df_coord['latitude'], lon=df_coord['longitude'], z=df_coord['conhece_oral_care_numeric'].count(), radius=10)
+    selected_city = contx[1].selectbox('conhece sobre oral care', df['conhece_oral_care'].unique())
 
-    # Personalize a escala de cores
-    #densitymapbox.coloraxis.colorscale = [[0, 'red'], [1, 'green']]  # Personalize as cores conforme necessário
-
-    # Configure o layout do mapa
-    layout = go.Layout(mapbox_style="open-street-map",
-                    mapbox_center={'lat': -23.5505, 'lon': -46.6333},
-                    mapbox_zoom=10,
-                    title="Mapa de Densidade de Conhecimento de Oral Care")
-
-    # Crie a figura
-    fig = go.Figure(data=densitymapbox, layout=layout)
+    # Filtrar o DataFrame com base na seleção da cidade
+    filtered_df = df_com_coords(df)
+    filtered_df = filtered_df[filtered_df['conhece_oral_care'] == selected_city]
+    filtered_df = filtered_df.query('cidade != "Outro"')
+    
+    fig = px.density_mapbox(filtered_df, lat='latitude', lon='longitude', radius=14,
+                        center=dict(lat=-15.8235629, lon=-47.9768165), zoom=9,
+                        mapbox_style="stamen-terrain")
+    contx[0].plotly_chart(fig, use_container_width=True)
+    filtered_df = df[df['conhece_oral_care'] == selected_city]
+    df = filtered_df.query('cidade == "Outro"')
+    contx[1].metric('Outra cidade:', len(df['conhece_oral_care']))
 
 
-    contx.plotly_chart(fig)
-
-def conhece_oral_care_genero(df: pd.DataFrame, contx: st):
+def plot_conhece_oral_care_genero(df: pd.DataFrame, contx: st):
     # Calcule as contagens por gênero e se conhecem o Oral Care
-    smoking_gender_counts = df.groupby(['genero', 'conhece_oral_care']).size().unstack().fillna(0)
+    df_group = df.groupby(['genero', 'conhece_oral_care']).size().unstack().fillna(0)
     # Reorganize os dados para criar o gráfico
-    smoking_gender_counts = smoking_gender_counts.reset_index()
-    smoking_gender_counts = pd.melt(smoking_gender_counts, id_vars='genero', var_name='Conhece Oral Care', value_name='Contagem')
+    df_group = df_group.reset_index()
+    df_group = pd.melt(df_group, id_vars='genero', var_name='Conhece Oral Care', value_name='Contagem')
     # Organize os dados em ordem crescente de contagem
-    smoking_gender_counts = smoking_gender_counts.sort_values(by='Contagem', ascending=False)
+    df_group = df_group.sort_values(by='Contagem', ascending=False)
     # Defina uma paleta de cores personalizada
     colors = {'Sim': '#d3ffce','Não': '#DC143C'}
     # Gráfico de Barras Empilhadas para Conhece Oral Care por Gênero (em ordem crescente)
-    fig = px.bar(smoking_gender_counts, x='genero', y='Contagem', title="Conhece Oral Care por Gênero",
+    fig = px.bar(df_group, x='genero', y='Contagem', title="Conhece Oral Care por Gênero",
                             color='Conhece Oral Care', color_discrete_map=colors, barmode='group')
     # Personalize as cores
     #fig.update_traces(marker_line_color='black', marker_line_width=1)
     fig.update_xaxes(title_text='Gênero')
     fig.update_yaxes(title_text='Quantidade')
-    fig.update_traces(text=smoking_gender_counts['Contagem'], textangle=0, textposition='outside')
+    fig.update_traces(text=df_group['Contagem'], textangle=0, textposition='outside')
     # Exiba o gráfico
     contx.plotly_chart(fig, use_container_width=True)
