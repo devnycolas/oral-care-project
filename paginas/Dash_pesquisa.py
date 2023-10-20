@@ -12,8 +12,9 @@ with open(caminho_locales, 'r') as arquivo_json:
 
 
 ordem = ["Menos de R$ 1.000,00", "R$ 1.000,00 a R$ 2.000,00", "R$ 2.001,00 a R$ 3.000,00", "R$ 3.001,00 a R$ 4.000,00", "Mais de R$ 4.000,00", "Não quero responder"]
+
 def dash_pesquisa(df: pd.DataFrame):
-    st.header("Dash pesquisa: Tendências e Desafios no Cuidado de Saúde Bucal")
+    st.header("Dash pesquisa: Tendências e Desafios no Cuidado de Saúde Bucal.")
     st.write("Graficos Voltados para o oral care")
     mapa  = st.columns([2,1])
     colg = st.columns(1)
