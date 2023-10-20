@@ -223,7 +223,6 @@ def plot_conhece_oral_care_genero(df: pd.DataFrame, contx: st):
     #fig.update_traces(marker_line_color='black', marker_line_width=1)
     fig.update_xaxes(title_text='Gênero')
     fig.update_yaxes(title_text='Quantidade')
-    fig.update_traces(text=df_group['Contagem'], textangle=0, textposition='outside')
     # Exiba o gráfico
     contx.plotly_chart(fig, use_container_width=True)
 
@@ -245,6 +244,5 @@ def plot_conhece_oral_care_cidade(df: pd.DataFrame, contx: st):
     #fig.update_traces(marker_line_color='black', marker_line_width=1)
     fig.update_xaxes(title_text='Gênero')
     fig.update_yaxes(title_text='Quantidade')
-    fig.update_traces(text=df_group['Contagem'], textangle=0, textposition='outside')
     # Exiba o gráfico
     contx.plotly_chart(fig, use_container_width=True)
