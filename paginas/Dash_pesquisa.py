@@ -3,11 +3,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import json
-
-caminho_locales = 'paginas\cache\locales.json'
-map_coords = {}
-with open(caminho_locales, 'r') as arquivo_json:
-    map_coords = json.load(arquivo_json)
+from .cache.prod_loc import locales
 
 
 ordem = ["Menos de R$ 1.000,00", "R$ 1.000,00 a R$ 2.000,00", "R$ 2.001,00 a R$ 3.000,00", "R$ 3.001,00 a R$ 4.000,00", "Mais de R$ 4.000,00", "Não quero responder"]
@@ -181,8 +177,8 @@ def plot_nskin_oc(df: pd.DataFrame, contx: st):
 def get_lat_lon(city):
     if city == 'Outro':
         return None, None
-    if city in map_coords.keys():
-        return map_coords[city][0], map_coords[city][1]
+    if city in locales.keys():
+        return locales[city][0], locales[city][1]
     else:
         return None, None
 
