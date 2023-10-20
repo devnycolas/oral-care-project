@@ -37,7 +37,6 @@ def organizarColunas(df):
 
 
 def renomear_colunas(df):
-
     df = df.rename(columns={'Carimbo de data/hora': 'data/hora'})
     df = df.rename(columns={'Gênero:': 'genero'})
     df = df.rename(columns={'Possui o habito de fumar?': 'habito_fumar'})
@@ -61,3 +60,12 @@ def renomear_colunas(df):
 
     return df
 
+
+def organizarColunas(df):
+    df = df[['genero', 'renda_percapita','habito_fumar','rotina_skin_care','sobre_rotina_skin_care','conhece_oral_care','produtos_relacionados_oral_care','pratica_raspagem_lingua','frequencia_escova_dentes_diaria','uso_fio_dental','escovar_dentes_com_forca','substitui_escova_dentes','usa_enxaguante_bucal','usa_protetor_solar_labial','uso_frequente_hidratante_labial','idade','cidade']]
+    
+    return df
+
+
+def salvar_dataframe(df:pd.DataFrame):
+    df.to_csv('\dados')
