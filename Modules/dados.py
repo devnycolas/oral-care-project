@@ -27,7 +27,7 @@ def pegar_dados():
 
 
 def organizarColunas(df):
-    df = df[['genero','habito_fumar','rotina_skin_care','sobre_rotina_skin_care','conhece_oral_care','produtos_relacionados_oral_care','pratica_raspagem_lingua','frequencia_escova_dentes_diaria','uso_fio_dental','escovar_dentes_com_forca','substitui_escova_dentes','usa_enxaguante_bucal','usa_protetor_solar_labial','uso_frequente_hidratante_labial','idade','cidade']]
+    df = df[['genero','habito_fumar','renda_percapita','rotina_skin_care','sobre_rotina_skin_care','conhece_oral_care','produtos_relacionados_oral_care','pratica_raspagem_lingua','frequencia_escova_dentes_diaria','uso_fio_dental','escovar_dentes_com_forca','substitui_escova_dentes','usa_enxaguante_bucal','usa_protetor_solar_labial','uso_frequente_hidratante_labial','idade','cidade']]
     return df
 
 
