@@ -1,27 +1,43 @@
+import json
 import gspread
 import pandas as pd
 import re
 import os
 import dotenv
+from oauth2client.service_account import ServiceAccountCredentials
+
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 
-def pegar_dados():
-    # CÓDIGO DA PLANILHA, LOCALIZADO NA URL DA MESMA
+def pegar_dados(codigo, credenciais):
+    """# CÓDIGO DA PLANILHA, LOCALIZADO NA URL DA MESMA
     CODE = str(os.getenv('code'))
-
-    # CRIANDO GOOGLE CLIENT
-    gc = gspread.service_account(filename="keyconnect.json")
+    json_string = credenciais
+    print(CREDENCIAIS)
+    CREDENCIAIS = dict(json.loads(json_string))
+    # CRIANDO GOOGLE CLIENT"""
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(credenciais)
+    gc = gspread.authorize(credentials)
 
     # Abrindo a planilha pelo código
-    sh = gc.open_by_key(CODE)
+    sh = gc.open_by_key(codigo)
 
     # Acessando a planilha pelo título "Respostas ao formulário 1" em específico
     ws = sh.worksheet("Respostas ao formulário 1")
 
     # GERANDO UM DATAFRAME COM PANDAS
     df = pd.DataFrame(ws.get_all_records())
+    df = renomear_colunas(df)
+    df = organizarColunas(df)
+    return df
 
+
+def organizarColunas(df):
+    df = df[['genero','habito_fumar','renda_percapita','rotina_skin_care','sobre_rotina_skin_care','conhece_oral_care','produtos_relacionados_oral_care','pratica_raspagem_lingua','frequencia_escova_dentes_diaria','uso_fio_dental','escovar_dentes_com_forca','substitui_escova_dentes','usa_enxaguante_bucal','usa_protetor_solar_labial','uso_frequente_hidratante_labial','idade','cidade']]
+    return df
+
+
+def renomear_colunas(df):
     df = df.rename(columns={'Carimbo de data/hora': 'data/hora'})
     df = df.rename(columns={'Gênero:': 'genero'})
     df = df.rename(columns={'Possui o habito de fumar?': 'habito_fumar'})
@@ -38,6 +54,19 @@ def pegar_dados():
     df = df.rename(columns={'Você utiliza enxaguante bucal?': 'usa_enxaguante_bucal'})
     df = df.rename(columns={'Você utiliza frequentemente protetor solar labial?': 'usa_protetor_solar_labial'})
     df = df.rename(columns={'Você faz uso frequente de hidratante labial?': 'uso_frequente_hidratante_labial'})
+    df = df.rename(columns={'Nome': 'nome'})
+    df = df.rename(columns={'Idade': 'idade'})
+    df = df.rename(columns={'Email': 'email'})
+    df = df.rename(columns={'Cidade': 'cidade'})
 
     return df
 
+
+def organizarColunas(df):
+    df = df[['genero', 'renda_percapita','habito_fumar','rotina_skin_care','sobre_rotina_skin_care','conhece_oral_care','produtos_relacionados_oral_care','pratica_raspagem_lingua','frequencia_escova_dentes_diaria','uso_fio_dental','escovar_dentes_com_forca','substitui_escova_dentes','usa_enxaguante_bucal','usa_protetor_solar_labial','uso_frequente_hidratante_labial','idade','cidade']]
+    
+    return df
+
+
+def salvar_dataframe(df:pd.DataFrame):
+    df.to_csv('\dados')

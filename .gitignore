@@ -12,4 +12,5 @@ keyconnect.json
 
 .env
 
-pesquisa_oral_care.xlsx
+.streamlit/secrets.toml
+cache/locales.json
