@@ -1,6 +1,13 @@
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
+from geopy.geocoders import Nominatim
+import json
+geolocator = Nominatim(user_agent="geoapiExercises")
+map_coords = {}
+caminho_locales = '.\cache\locales.json'
+
 ordem = ["Menos de R$ 1.000,00", "R$ 1.000,00 a R$ 2.000,00", "R$ 2.001,00 a R$ 3.000,00", "R$ 3.001,00 a R$ 4.000,00", "Mais de R$ 4.000,00", "Não quero responder"]
 def dash_pesquisa(df: pd.DataFrame):
     st.header("Dash pesquisa: Tendências e Desafios no Cuidado de Saúde Bucal")
@@ -8,6 +15,7 @@ def dash_pesquisa(df: pd.DataFrame):
     cols = st.columns([2])
     rend1, rend2 = st.columns(2)
     col_sk1, col_sk2 = st.columns(2)
+    #plot_mapa(df, st)
     plot_renda_conhece_oc(df, rend1)
     plot_agravantes(df, cols[0])
     plot_renda_conhece_produtos_oc(df, rend2)
@@ -71,8 +79,8 @@ def df_com_agravante(df: pd.DataFrame):
         'sim':2, 'As vezes': 1, 'Não': 0 
     }
     # Aplicar os mapeamentos positivos e negativos
-    df[col_positivos] = df[col_positivos].applymap(lambda x: mapeamento.get(x, 0))
-    df[col_negativos] = df[col_negativos].applymap(lambda x: mapeamento_negativo.get(x, 0))
+    df[col_positivos] = df[col_positivos].map(lambda x: mapeamento.get(x, 0))
+    df[col_negativos] = df[col_negativos].map(lambda x: mapeamento_negativo.get(x, 0))
 
     # Soma dos resultados
     df['agravantes'] = df[col_positivos].sum(axis=1) + df[col_negativos].sum(axis=1)
@@ -161,3 +169,60 @@ def plot_nskin_oc(df: pd.DataFrame, contx: st):
     fig.update_traces(marker=dict(colors=cores))
     
     contx.plotly_chart(fig, use_container_width=True)
+
+def get_json_cache():
+    try:
+        locales = json.loads(caminho_locales)
+        return locales
+    except:
+        return {}
+
+
+def get_lat_lon(city):
+    if city == 'Outro':
+        return None, None
+    if city in map_coords.keys():
+        return map_coords[city][0], map_coords[city][1]
+    
+    location = geolocator.geocode(city)
+    
+    if location:
+        map_coords[city] = [location.latitude, location.longitude]
+        return location.latitude, location.longitude
+    else:
+        return None, None
+
+def salvar_loc_cache():
+    with open(caminho_locales, 'w') as arquivo_json:
+        json.dump(map_coords, arquivo_json)
+
+
+def df_com_coords(df: pd.DataFrame):
+    map_coords = get_json_cache()
+    df['latitude'], df['longitude'] = zip(*df['cidade'].apply(get_lat_lon))
+    salvar_loc_cache()
+    return df
+
+
+def plot_mapa(df: pd.DataFrame, contx: st):
+    df_coord = df_com_coords(df)
+    # Crie o objeto Densitymapbox
+    conhece_oral_care_mapping = {'Sim': 1, 'Não': 0}
+    df_coord['conhece_oral_care_numeric'] = df_coord['conhece_oral_care'].map(conhece_oral_care_mapping)
+    df_coord['conhece_oral_care_numeric'] = df_coord['conhece_oral_care_numeric'].astype(int)
+    densitymapbox = go.Densitymapbox(lat=df_coord['latitude'], lon=df_coord['longitude'], z=df_coord['conhece_oral_care_numeric'].count(), radius=10)
+
+    # Personalize a escala de cores
+    #densitymapbox.coloraxis.colorscale = [[0, 'red'], [1, 'green']]  # Personalize as cores conforme necessário
+
+    # Configure o layout do mapa
+    layout = go.Layout(mapbox_style="open-street-map",
+                    mapbox_center={'lat': -23.5505, 'lon': -46.6333},
+                    mapbox_zoom=10,
+                    title="Mapa de Densidade de Conhecimento de Oral Care")
+
+    # Crie a figura
+    fig = go.Figure(data=densitymapbox, layout=layout)
+
+
+    contx.plotly_chart(fig)
