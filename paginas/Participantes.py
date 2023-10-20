@@ -6,7 +6,7 @@ def participantes(df):
     st.header("Sobre os participantes:")
     st.write("Graficos Voltados para quem respondeu a pesquisa")
     col1, col2 = st.columns(2)
-    col3 = st.columns(1)
+    col3 = st.columns(1)[0]
     plot_pizza_genero(df, col1)
     plot_habito_fumar(df, col2)
     plot_skin_care_genero(df, col3)
