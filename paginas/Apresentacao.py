@@ -24,6 +24,7 @@ def plot_mapa_sim(df: pd.DataFrame, contx: st):
                         mapbox_style="stamen-terrain", title="Onde conhecem o oral care?")
     contx.plotly_chart(fig, use_container_width=True)
 
+
 def plot_mapa_nao(df: pd.DataFrame, contx: st):
     # Filtrar o DataFrame com base na seleção da cidade
     filtered_df = df_com_coords(df)
