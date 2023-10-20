@@ -22,9 +22,10 @@ def plot_pizza_genero(df: pd.DataFrame, contx: st):
 def plot_habito_fumar(df: pd.DataFrame, contx: st):
     cold_colors = ['#782f40', '#00274c', '#3c5656']
     # Atribua a paleta de cores frias ao gráfico e use a coluna 'genero' para definir as cores
-    fig_pie = px.pie(df, names='plot_habito_fumar', color='plot_habito_fumar', title="Porcentagem de Pessoas com Hábito de Fumar",
-                    color_discrete_map={gen: cold_colors[i] for i, gen in enumerate(df['plot_habito_fumar'].unique())})
-    contx.plotly_chart(fig_pie, use_container_width=True)
+    fig = px.pie(df, names='habito_fumar', color='habito_fumar', title="Porcentagem de Pessoas com Hábito de Fumar",
+                    color_discrete_map={gen: cold_colors[i] for i, gen in enumerate(df['habito_fumar'].unique())})
+    contx.plotly_chart(fig, use_container_width=True)
+
 
 def plot_skin_care_genero(df: pd.DataFrame, contx: st):
     routine_skin_care_counts = df.groupby(['genero', 'rotina_skin_care']).size().unstack().fillna(0)
