@@ -43,11 +43,10 @@ def sobre(df):
     # Personalize o rótulo do eixo y
     fig_bar.update_yaxes(title="Número de Pessoas")
     
-    # Ajuste o layout do gráfico para aumentar a proporção
-    fig_bar.update_layout(height=600)  # Defina a altura desejada
+
     
     # Exiba o gráfico
     st.plotly_chart(fig_bar, use_container_width=True)
 
 # Executar a função para exibir a seção "Sobre a Equipe e o Projeto" com o gráfico abaixo
-df = pegar_dados()
+df = pegar_dados('C:\\Users\\lucio\\OneDrive\\Documentos\\GitHub\\oral-care-project\\Modules\\Analisador\\Analise')
