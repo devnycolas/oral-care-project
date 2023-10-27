@@ -7,7 +7,7 @@ Projeto de Extensão da matéria de Big Data em Python.
 [🔗 Clique aqui para acessar](https://oral-care.streamlit.app/)
 
 
-## 🛠 Tecnologias
+## 💻 Tecnologias
 
 - Python
 - Dados consumidos e atualizados em tempo real via API Google que está sendo alimentada por um formulário Google
@@ -16,6 +16,6 @@ Projeto de Extensão da matéria de Big Data em Python.
 - Biblioteca Plotly cria gráficos interativos com qualidade de publicação
 - Git e Github
 
-## 💛 Contato
+## 💙 Contato
 
 dev.nycolas@outlook.com
