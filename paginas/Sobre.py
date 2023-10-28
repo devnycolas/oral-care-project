@@ -48,5 +48,3 @@ def sobre(df):
     # Exiba o gráfico
     st.plotly_chart(fig_bar, use_container_width=True)
 
-# Executar a função para exibir a seção "Sobre a Equipe e o Projeto" com o gráfico abaixo
-df = pegar_dados('C:\\Users\\lucio\\OneDrive\\Documentos\\GitHub\\oral-care-project\\Modules\\Analisador\\Analise')
