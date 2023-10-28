@@ -1,11 +1,13 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from .Dash_pesquisa import df_com_coords
+from .Dash_pesquisa import df_com_coords, plot_conhece_oral_care_cidade, plot_conhece_oral_care_genero
 
 
 def apresentacao(df):
+    plot_conhece_oral_care_cidade(df, st)
     plot_conhece_oral_care_idade(df, st)
+    plot_conhece_oral_care_genero(df, st)
     col1, col2 = st.columns([2,2])
     plot_mapa_sim(df, col1)
     plot_mapa_nao(df, col2)
@@ -21,6 +23,7 @@ def plot_mapa_sim(df: pd.DataFrame, contx: st):
                         center=dict(lat=-15.8235629, lon=-47.9768165), zoom=9,
                         mapbox_style="stamen-terrain", title="Onde conhecem o oral care?")
     contx.plotly_chart(fig, use_container_width=True)
+
 
 def plot_mapa_nao(df: pd.DataFrame, contx: st):
     # Filtrar o DataFrame com base na seleção da cidade

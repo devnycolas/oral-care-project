@@ -50,3 +50,10 @@ def sobre(df):
 
 # Executar a função para exibir a seção "Sobre a Equipe e o Projeto" com o gráfico abaixo
 df = pegar_dados('C:\\Users\\lucio\\OneDrive\\Documentos\\GitHub\\oral-care-project\\Modules\\Analisador\\Analise')
+
+
+
+def sobre(df):
+    st.header("Sobre")
+    st.write("Pagina em construção, chegando em breve...")
+ 
