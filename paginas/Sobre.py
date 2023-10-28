@@ -22,12 +22,12 @@ def sobre(df):
 
     # Membro 1
     with col1:
-        st.image("Modules\\img\\TI.jpg", width=300, caption="Equipe de TI")
+        st.image("Modules\img\TI.jpg", width=300, caption="Equipe de TI")
         st.write("Cargo/Descrição: montar uma pesquisa e fazer o tratamento dos dados impostos pelo Cliente. (Odontologia)")
 
     # Membro 2
     with col2:
-        st.image("Modules\\img\\odonto.jpg", width=300, caption="Equipe de Odonto")
+        st.image("Modules\img\odonto.jpg", width=300, caption="Equipe de Odonto")
         st.write("Equipe que montou as perguntas e vai usar os dados da melhor maneira para ajudar seus clientes no dia a dia e futuros clientes.")
 
     # Exibir resultados do projeto, como um gráfico
