@@ -21,7 +21,6 @@ def sobre(df: pd.DataFrame):
     # Criar uma estrutura de colunas para colocar as imagens lado a lado
     col_img_1, col_img_2 = st.columns(2)
 
-    
     col_img_1.image("Modules/img/odonto.jpg", width=300, caption="Equipe de Odonto")
     col_img_1.write("Equipe de odontologia que precisa de uma pesquisa e analise para apresentar os dados sobre Oral Care.")
     
