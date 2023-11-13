@@ -10,7 +10,8 @@ from paginas.Apresentacao import *
 from Modules.dados import pegar_dados
 
 
-st.set_page_config(layout="wide", page_title="Oral Care", initial_sidebar_state = 'auto')
+st.set_page_config(layout="wide", page_title="Oral Care", page_icon = ".\Modules\img\iconpage.png", initial_sidebar_state = 'auto')
+
 
 pages = {
     "Sobre": sobre,
